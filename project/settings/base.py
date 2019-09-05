@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["*"]
 CUSTOM_APPS = [
     'apps.restful',
     'apps.account',
+    'apps.store'
 ]
 
 THIRD_PARTY_APPS = [
