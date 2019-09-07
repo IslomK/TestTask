@@ -18,5 +18,9 @@ class Order(models.Model):
     )
 
     created_at = models.DateTimeField(default=timezone.now)
-    total_cost = models.FloatField()
-    status = models.CharField(max_length=255, choices=STATUS_TYPES)
+    total_cost = models.FloatField(null=True, blank=True)
+    status = models.CharField(max_length=255, choices=STATUS_TYPES, null=True)
+    customer = models.ForeignKey('account.ClientProfile', on_delete=models.CASCADE, related_name='orders', null=True,
+                                 blank=True)
+    driver = models.ForeignKey('account.DriverProfile', on_delete=models.CASCADE, related_name='orders', null=True,
+                               blank=True)
