@@ -114,9 +114,24 @@ class OrderUpdateSerializer(OrderCreateSerializer):
 
 
 class OrderUpdateStatusSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = store_models.Order
-        fields = ['status', ]
+        fields = ['status', 'total_cost']
+
+    def update(self, instance, validated_data):
+        status = validated_data.get('status', None)
+        total_cost = validated_data.get('total_cost', None)
+
+        if status == store_models.Order.COMPLETED:
+            if not total_cost:
+                raise serializers.ValidationError({
+                    "total_cost": "Can not update status to completed without total_cost field"
+                })
+
+        instance.status = status
+        instance.save()
+        instance.refres_from_db()
 
     def to_representation(self, instance):
         return {
@@ -126,3 +141,4 @@ class OrderUpdateStatusSerializer(serializers.ModelSerializer):
             'car_number': instance.driver.car_number,
             'status': instance.status
         }
+
