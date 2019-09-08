@@ -6,6 +6,18 @@ pip install -r requirements.txt
 ~~~
 For the database, PostgreSQL is used. In order to start project, create the database __"my_taxi"__, with the role __"my_taxi"__, password - __"my_taxi"__. Or, if you want to use your own database without creating new one, just go the _settings/base.py_ and change database options.
 
+
+The project structure:
+~~~
+my_taxi:
+  apps/
+  project/
+  manage.py
+~~~
+where _apps/_ is the directory where all the applications are stored. "account" app - application where all the models related to user are located (Client, Driver). "restful" - main part of the project. "store" - orders.
+
+According to the fact, that the project is test task, I decided not to use user authentication.
+
 To create new order:
 ***POST*** __/v1/client/orders/create/__ - POST request made by client to create new order. All three fields are required. After request is made, if there is not any user with the given phone, new user is created by system automatically.
 ~~~
