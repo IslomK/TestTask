@@ -4,6 +4,8 @@ The following project is considered to be little client-order system in taxi ser
 ~~~
 pip install -r requirements.txt
 ~~~
+In addition to this - __Django Swagger__ is used in order to make the documentations process easy for the developers.
+
 For the database, PostgreSQL is used. In order to start project, create the database __"my_taxi"__, with the role __"my_taxi"__, password - __"my_taxi"__. Or, if you want to use your own database without creating new one, just go the _settings/base.py_ and change database options.
 
 
