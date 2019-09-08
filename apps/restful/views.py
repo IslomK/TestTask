@@ -35,3 +35,9 @@ class UpdateOrderStatusView(generics.UpdateAPIView):
     def get_object(self):
         return get_object_or_404(store_models.Order, pk=self.kwargs.get('pk'))
 
+
+class OrderDetailView(generics.RetrieveAPIView):
+    serializer_class = restful_serializers.OrderSerializer
+
+    def get_object(self):
+        return get_object_or_404(store_models.Order, id=self.kwargs.get('pk'))

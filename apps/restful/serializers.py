@@ -45,12 +45,33 @@ class OrderSerializer(serializers.ModelSerializer):
         model = store_models.Order
         fields = ['created_at', 'total_cost', 'status', 'customer', 'driver', ]
 
+    def to_representation(self, instance):
+        kwargs = {
+            'order_id': instance.id,
+            'customer_full_name': instance.customer.user.get_full_name(),
+            'customer_phone': instance.customer.user.phone,
+            'created_at': instance.created_at,
+            'status': instance.status
+        }
+        if instance.status != store_models.Order.NEW:
+            kwargs.update({
+                'driver_full_name': instance.driver.user.get_full_name(),
+                'driver_phone': instance.driver.user.phone,
+                'car_number': instance.driver.car_number,
+            })
+        if instance.status == store_models.Order.COMPLETED:
+            kwargs.update({
+                'total_cost': instance.total_cost
+            })
+
+        return kwargs
+
 
 class OrderCreateSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(max_length=250, write_only=True)
     last_name = serializers.CharField(max_length=250, write_only=True)
     phone = serializers.CharField(max_length=250, write_only=True)
-    car_number = serializers.CharField(max_length=250, required=False, write_only=True)
+    car_number = serializers.CharField(max_length=250, required=False, read_only=True)
 
     class Meta:
         model = store_models.Order
@@ -69,11 +90,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         return order
 
     def to_representation(self, instance):
-        return {
-            'order_id': instance.id,
-            'customer_full_name': instance.customer.user.get_full_name(),
-            'status': instance.status
-        }
+        return OrderSerializer.to_representation(OrderSerializer, instance)
 
 
 class OrderUpdateSerializer(OrderCreateSerializer):
@@ -99,13 +116,7 @@ class OrderUpdateSerializer(OrderCreateSerializer):
         return instance
 
     def to_representation(self, instance):
-        return {
-            'order_id': instance.id,
-            'customer_full_name': instance.customer.user.get_full_name(),
-            'driver_full_name': instance.driver.user.get_full_name(),
-            'car_number': instance.driver.car_number,
-            'status': instance.status
-        }
+        return OrderSerializer.to_representation(OrderSerializer, instance)
 
     def validate_phone(self, value):
         if account_models.User.objects.filter(phone=value, user_type=account_models.User.CLIENT).exists():
@@ -128,17 +139,12 @@ class OrderUpdateStatusSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({
                     "total_cost": "Can not update status to completed without total_cost field"
                 })
+            instance.total_cost = total_cost
 
         instance.status = status
         instance.save()
-        instance.refres_from_db()
+        instance.refresh_from_db()
+        return instance
 
     def to_representation(self, instance):
-        return {
-            'order_id': instance.id,
-            'customer_full_name': instance.customer.user.get_full_name(),
-            'driver_full_name': instance.driver.user.get_full_name(),
-            'car_number': instance.driver.car_number,
-            'status': instance.status
-        }
-
+        return OrderSerializer.to_representation(OrderSerializer, instance)
