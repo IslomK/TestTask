@@ -11,7 +11,7 @@ For the database, PostgreSQL is used. In order to start project, create the data
 
 The project structure:
 ~~~
-my_taxi:
+TestTask:
   apps/
   project/
   manage.py
