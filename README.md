@@ -1,6 +1,6 @@
 # TestTask
 
-The following project is considered to be little client-order system in taxi service. For developing the project, Python/Django framework (v2.2.5) is used. All the required libraries are placed in the document - requirements.txt. In order to install them, write the following command after activating your python virtual enviroment:
+The following project is considered to be little client-order system in taxi service. For developing the project, Python(v3.6)/Django(v2.2.5) is used. All the required libraries are placed in the document - requirements.txt. In order to install them, write the following command after activating your python virtual enviroment:
 ~~~
 pip install -r requirements.txt
 ~~~
